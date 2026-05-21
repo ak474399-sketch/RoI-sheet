@@ -1,0 +1,37 @@
+---
+description: IAP ROI 预测器开发规范
+globs: ["**/*.ts", "**/*.tsx", "**/*.css"]
+alwaysApply: true
+---
+
+# 开发规范
+
+## 核心原则
+1. 严格按照 `SPEC.md` 实现，禁止自行简化或修改计算逻辑
+2. 计算完成后必须用 SPEC.md 第十节的验证数据核对结果
+3. 所有计算逻辑集中在 `lib/calculator.ts`，UI 组件只调用不计算
+4. 参数变化实时触发重算，无需提交按钮
+
+## 技术约束
+- Next.js 15 App Router，TypeScript 严格模式
+- 样式只用 Tailwind CSS + shadcn/ui，禁止内联 style
+- 图表只用 Recharts
+- 导出用原生 Blob，禁止引入 xlsx、file-saver 等重型库
+- 目标 bundle < 500KB gzip
+
+## 代码规范
+- 组件文件顶部必须有 `'use client'`（含状态或事件的组件）
+- 数字精度统一使用 `Math.round(x * 100) / 100`
+- 百分比输入框：用户输入 0-100，内部存储 0-1 小数
+- 禁止使用 `any` 类型
+- 组件 props 必须有明确的 TypeScript interface
+
+## 文件结构约束
+严格按照 SPEC.md 第三节的目录结构创建文件，不得随意合并或拆分
+
+## UI 规范
+- 深色主题（背景 #0f1117，卡片 #1a1d27）
+- 主色调：indigo/violet（shadcn 主题变量）
+- ROI >= 100% 用绿色（text-emerald-400）
+- ROI < 0% 用红色（text-red-400）
+- 数字列使用等宽字体（font-mono）

@@ -12,6 +12,7 @@ import { CompareView } from '@/components/ScenarioManager/CompareView';
 import { exportProjectionCsv } from '@/utils/exportData';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScenarioTabLabel } from '@/components/ScenarioManager/ScenarioTabLabel';
 import { Download, GitCompare, Moon, Plus, Sun, X } from 'lucide-react';
 
 function createScenario(name: string, params?: ProjectionParams): Scenario {
@@ -23,7 +24,7 @@ function createScenario(name: string, params?: ProjectionParams): Scenario {
 const SCENARIO_NAMES = ['方案A', '方案B', '方案C', '方案D'];
 
 export default function Home() {
-  const initialScenario = useMemo(() => createScenario('方案A'), []);
+  const initialScenario = useMemo(() => createScenario('方案 1'), []);
   const [scenarios, setScenarios] = useState<Scenario[]>(() => [initialScenario]);
   const [activeId, setActiveId] = useState<string>(initialScenario.id);
   const [compareMode, setCompareMode] = useState(false);
@@ -63,6 +64,14 @@ export default function Home() {
     });
   };
 
+  const renameScenario = useCallback((id: string, name: string) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    setScenarios((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, name: trimmed } : s))
+    );
+  }, []);
+
   const chartSeries = useMemo(() => {
     if (compareMode) return scenarios.map((s) => ({ name: s.name, result: s.result }));
     return [{ name: active.name, result: active.result }];
@@ -82,7 +91,10 @@ export default function Home() {
             <TabsList className="h-7">
               {scenarios.map((s) => (
                 <TabsTrigger key={s.id} value={s.id} className="h-6 text-xs gap-1">
-                  {s.name}
+                  <ScenarioTabLabel
+                    name={s.name}
+                    onRename={(name) => renameScenario(s.id, name)}
+                  />
                   {scenarios.length > 1 && (
                     <span
                       role="button"

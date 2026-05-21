@@ -1,6 +1,7 @@
 'use client';
 
 import type { ProjectionResult } from '@/lib/types';
+import { formatUsd, formatUsdSigned } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
 interface SummaryCardsProps {
@@ -48,12 +49,6 @@ function profitHighlight(v: number): 'green' | 'red' | 'neutral' {
   return 'neutral';
 }
 
-function fmtProfit(v: number): string {
-  const abs = Math.abs(v);
-  const sign = v >= 0 ? '+' : '-';
-  return `${sign}¥${abs.toLocaleString('zh-CN', { maximumFractionDigits: 0 })}`;
-}
-
 export function SummaryCards({ result }: SummaryCardsProps) {
   const day180Profit = result.day180CumRevenue - result.params.adSpend;
   const day365Profit = result.day365CumRevenue - result.params.adSpend;
@@ -63,13 +58,13 @@ export function SummaryCards({ result }: SummaryCardsProps) {
       <MetricCard
         label="DAY365 回收"
         value={`${Math.round(result.day365Roi)}%`}
-        sub={`¥${result.day365CumRevenue.toLocaleString('zh-CN', { maximumFractionDigits: 0 })}`}
+        sub={formatUsd(result.day365CumRevenue)}
         highlight={roiHighlight(result.day365Roi)}
       />
       <MetricCard
         label="DAY180 回收"
         value={`${Math.round(result.day180Roi)}%`}
-        sub={`¥${result.day180CumRevenue.toLocaleString('zh-CN', { maximumFractionDigits: 0 })}`}
+        sub={formatUsd(result.day180CumRevenue)}
         highlight={roiHighlight(result.day180Roi)}
       />
       <MetricCard
@@ -84,12 +79,12 @@ export function SummaryCards({ result }: SummaryCardsProps) {
       />
       <MetricCard
         label="DAY365 毛利"
-        value={fmtProfit(day365Profit)}
+        value={formatUsdSigned(day365Profit)}
         highlight={profitHighlight(day365Profit)}
       />
       <MetricCard
         label="DAY180 毛利"
-        value={fmtProfit(day180Profit)}
+        value={formatUsdSigned(day180Profit)}
         highlight={profitHighlight(day180Profit)}
       />
     </div>

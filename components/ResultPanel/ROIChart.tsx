@@ -22,7 +22,7 @@ interface ROIChartProps {
 }
 
 export function ROIChart({ series }: ROIChartProps) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   // 只展示 W0~W52
   const weeks = series[0]?.result.rows.map((r) => r.week) ?? [];

@@ -11,7 +11,7 @@ interface ConversionSectionProps {
 
 export function ConversionSection({ params, onChange }: ConversionSectionProps) {
   return (
-    <CollapsibleSection title="其他收益" defaultOpen={false}>
+    <CollapsibleSection title="其他收益" defaultOpen>
       <div className="grid grid-cols-2 gap-3">
         <NumberField
           label="广告收益（总量）"

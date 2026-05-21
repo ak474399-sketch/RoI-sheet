@@ -22,7 +22,7 @@ export function RetentionEditor({ rates, onChange }: RetentionEditorProps) {
   };
 
   return (
-    <CollapsibleSection title="续订率 W0~W25" defaultOpen={false}>
+    <CollapsibleSection title="续订率 W0~W25" defaultOpen>
       <p className="text-xs text-muted-foreground -mt-1">
         W0 固定 100%；W1 起为相对上周的续订率；W26 以后按最后值延伸至 Day365
       </p>

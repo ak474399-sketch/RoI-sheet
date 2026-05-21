@@ -16,7 +16,7 @@ export function ParamPanel({ params, result, onChange }: ParamPanelProps) {
   const patch = (p: Partial<ProjectionParams>) => onChange({ ...params, ...p });
 
   return (
-    <aside className="w-[340px] shrink-0 overflow-y-auto border-r border-border bg-sidebar p-3 space-y-3 max-h-[calc(100vh-48px)]">
+    <aside className="w-[340px] shrink-0 overflow-y-auto overflow-x-visible border-r border-border bg-sidebar p-3 space-y-3 max-h-[calc(100vh-48px)]">
       <InvestmentSection
         params={params}
         derived={{ totalUsers: result.totalUsers, cpa: result.cpa }}

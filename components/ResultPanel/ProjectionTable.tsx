@@ -8,53 +8,68 @@ interface ProjectionTableProps {
   result: ProjectionResult;
 }
 
+/** W26 起 ROI 不再累计，仅展示续订人数参考 */
+const REVENUE_CAP_WEEK = 25;
+
 export function ProjectionTable({ result }: ProjectionTableProps) {
   return (
     <div className="flex-1 min-h-0 flex flex-col bg-card border border-border rounded-xl overflow-hidden">
-      <div className="px-3 py-1.5 border-b border-border shrink-0">
+      <div className="px-3 py-1.5 border-b border-border shrink-0 flex items-center justify-between gap-2">
         <span className="text-xs font-medium text-primary">周预测明细</span>
+        <span className="text-[10px] text-muted-foreground">ROI 累计至 W26 · W27+ 仅续订参考</span>
       </div>
       <div className="flex-1 min-h-0 overflow-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm table-fixed">
+          <colgroup>
+            <col className="w-[72px]" />
+            <col className="w-[64px]" />
+            <col className="w-[72px]" />
+            <col className="w-[80px]" />
+            <col className="w-[48px]" />
+          </colgroup>
           <thead className="sticky top-0 z-10 bg-muted/80 backdrop-blur-sm">
             <tr className="text-left">
-              <th className="px-2 py-1.5 font-medium text-muted-foreground text-xs">周期</th>
-              <th className="px-2 py-1.5 font-medium text-muted-foreground text-xs text-right">订阅人数</th>
-              <th className="px-2 py-1.5 font-medium text-muted-foreground text-xs text-right">周收益</th>
-              <th className="px-2 py-1.5 font-medium text-muted-foreground text-xs text-right">累计收益</th>
-              <th className="px-2 py-1.5 font-medium text-muted-foreground text-xs text-right w-14">ROI</th>
+              <th className="px-2 py-1.5 text-xs font-medium text-muted-foreground">周期</th>
+              <th className="px-1 py-1.5 text-xs font-medium text-muted-foreground text-right">人数</th>
+              <th className="px-1 py-1.5 text-xs font-medium text-muted-foreground text-right">周收益</th>
+              <th className="px-1 py-1.5 text-xs font-medium text-muted-foreground text-right">累计</th>
+              <th className="px-1 py-1.5 text-xs font-medium text-muted-foreground text-right">ROI</th>
             </tr>
           </thead>
           <tbody>
-            {result.rows.map((row) => (
-              <tr
-                key={row.week}
-                className={cn(
-                  'border-b border-border/40 hover:bg-muted/30 transition-colors',
-                  row.roiPct >= 100 && 'bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/15'
-                )}
-              >
-                <td className="px-2 py-1.5 whitespace-nowrap">{row.label}</td>
-                <td className="px-2 py-1.5 text-right font-mono tabular-nums">
-                  {row.subscribers.toFixed(2)}
-                </td>
-                <td className="px-2 py-1.5 text-right font-mono tabular-nums">
-                  {formatUsd(row.weeklyRevenue, 1)}
-                </td>
-                <td className="px-2 py-1.5 text-right font-mono tabular-nums">
-                  {formatUsd(row.cumulativeRevenue, 1)}
-                </td>
-                <td
+            {result.rows.map((row) => {
+              const beyondCap = row.week > REVENUE_CAP_WEEK;
+              return (
+                <tr
+                  key={row.week}
                   className={cn(
-                    'px-2 py-1.5 text-right font-mono tabular-nums font-medium',
-                    row.roiPct >= 100 && 'text-emerald-600 dark:text-emerald-400',
-                    row.roiPct < 0 && 'text-red-500 dark:text-red-400'
+                    'border-b border-border/40 hover:bg-muted/30 transition-colors',
+                    !beyondCap && row.roiPct >= 100 && 'bg-emerald-50 dark:bg-emerald-500/10',
+                    beyondCap && 'text-muted-foreground/70'
                   )}
                 >
-                  {Math.round(row.roiPct)}%
-                </td>
-              </tr>
-            ))}
+                  <td className="px-2 py-1.5 truncate">{row.label}</td>
+                  <td className="px-1 py-1.5 text-right font-mono tabular-nums text-xs">
+                    {row.subscribers.toFixed(2)}
+                  </td>
+                  <td className="px-1 py-1.5 text-right font-mono tabular-nums text-xs">
+                    {formatUsd(row.weeklyRevenue, 1)}
+                  </td>
+                  <td className="px-1 py-1.5 text-right font-mono tabular-nums text-xs">
+                    {formatUsd(row.cumulativeRevenue, 1)}
+                  </td>
+                  <td
+                    className={cn(
+                      'px-1 py-1.5 text-right font-mono tabular-nums text-xs font-medium',
+                      !beyondCap && row.roiPct >= 100 && 'text-emerald-600 dark:text-emerald-400',
+                      !beyondCap && row.roiPct < 0 && 'text-red-500 dark:text-red-400'
+                    )}
+                  >
+                    {Math.round(row.roiPct)}%
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

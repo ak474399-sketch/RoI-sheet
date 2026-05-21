@@ -18,22 +18,22 @@ export function CollapsibleSection({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="bg-card border border-border rounded-xl overflow-hidden">
+    <div className="bg-card border border-border rounded-xl overflow-visible">
       <button
         type="button"
-        className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-muted/40 transition-colors"
+        className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-muted/40 transition-colors rounded-t-xl"
         onClick={() => setOpen((v) => !v)}
       >
         <span className="text-xs font-semibold text-primary tracking-wide">{title}</span>
         <ChevronRight
           className={cn(
-            'size-3.5 text-muted-foreground transition-transform duration-150',
+            'size-3.5 shrink-0 text-muted-foreground transition-transform duration-150',
             open && 'rotate-90'
           )}
         />
       </button>
       {open && (
-        <div className="px-3 pb-3 pt-1 border-t border-border grid gap-3">
+        <div className="px-3 pb-3 pt-2 border-t border-border space-y-3 overflow-visible">
           {children}
         </div>
       )}
